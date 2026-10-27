@@ -1,0 +1,7 @@
+{
+  "defaultAction": "allow",
+  "ops": [],
+  "denyOps": ["IORING_OP_MSG_RING"],
+  "socketFamilies": [],
+  "deniedSqeFlags": []
+}

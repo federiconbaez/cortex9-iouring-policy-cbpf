@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    name: unit (fmt + clippy + test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+      - name: fmt
+        run: cargo fmt --all -- --check
+      - name: clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: test
+        run: cargo test --workspace
+
+  enforce:
+    name: enforce (IORING_REGISTER_BPF_FILTER)
+    runs-on: ubuntu-latest
+    # Sin continue-on-error: si el runner no tiene kernel >= 7.0, el job falla.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+      - name: show kernel
+        run: uname -a; cat /proc/sys/kernel/osrelease
+      - name: register cBPF filter (fail hard if unsupported)
+        run: cargo run --bin iouring-policy-enforce
