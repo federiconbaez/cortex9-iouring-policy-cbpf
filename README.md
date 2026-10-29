@@ -25,7 +25,9 @@ iouring-lab-shaped JSON profile and emits testable bytecode.*
 | Parser del JSON OCI-like | sí (`cargo test`) |
 | Emisión cBPF + intérprete userspace | sí |
 | Cobertura del `default.json` (38 allow + denies) | **medida** (ver abajo) |
-| `IORING_REGISTER_BPF_FILTER` en el kernel | **no** — kernel 6.12; el binario `iouring-policy-enforce` **falla fuerte** (exit 2) |
+| `IORING_REGISTER_BPF_FILTER` en el kernel (box) | **no** — kernel 6.12; el binario `iouring-policy-enforce` **falla fuerte** (exit 2) |
+| `IORING_REGISTER_BPF_FILTER` en el kernel (CI) | **registro aceptado** en el runner `ubuntu-24.04` con kernel `7.0.0-1017-azure` (`enforce.yml`, salida `register=ok`) |
+| Que el kernel efectivamente deniegue un opcode filtrado | **no probado** todavía: el binario solo registra el filtro |
 
 *Unit tests and the userspace interpreter run here. Real kernel registration
 needs Linux ≥ 7.0 and is exercised by the `enforce.yml` workflow, which fails hard
