@@ -28,7 +28,7 @@ iouring-lab-shaped JSON profile and emits testable bytecode.*
 | `IORING_REGISTER_BPF_FILTER` en el kernel | **no** — kernel 6.12; el binario `iouring-policy-enforce` **falla fuerte** (exit 2) |
 
 *Unit tests and the userspace interpreter run here. Real kernel registration
-needs Linux ≥ 7.0 and is exercised by the CI `enforce` job, which fails hard
+needs Linux ≥ 7.0 and is exercised by the `enforce.yml` workflow, which fails hard
 (no `continue-on-error`, no silent skip) when the feature is missing.*
 
 ## Medición / Measurement
@@ -63,7 +63,7 @@ cargo run --bin iouring-policy-enforce
 # en >= 7.0 con la feature → exit 0
 ```
 
-El job `enforce` de `.github/workflows/ci.yml` corre exactamente eso y **no**
+El workflow `.github/workflows/enforce.yml` corre exactamente eso y **no**
 tiene `continue-on-error`.
 
 ## Uso / Usage
@@ -73,6 +73,11 @@ cargo run -- compile fixtures/default.json --dump
 cargo run -- measure fixtures/default.json
 cargo run -- register fixtures/default.json   # falla fuerte sin kernel 7+
 ```
+
+## CI
+
+- `.github/workflows/ci.yml`: fmt + `clippy -D warnings` + `cargo test` + reproducción de la medición. Tiene que quedar verde.
+- `.github/workflows/enforce.yml`: corre `cargo run --bin iouring-policy-enforce` de verdad en el runner, sin `continue-on-error` ni `#[ignore]`. En runners con kernel < 7.0 este workflow queda **rojo** (exit 2): es el resultado esperado y honesto, no un skip.
 
 ## Fuentes leídas de verdad / Sources actually read
 
